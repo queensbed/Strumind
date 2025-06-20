@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useRef, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Text, Line } from '@react-three/drei'
+import { OrbitControls, Text, Line, Html, Box, Sphere, Plane } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface AnalysisResult {

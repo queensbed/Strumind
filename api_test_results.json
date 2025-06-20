@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-06-20 09:47:27",
+  "summary": {
+    "total_tests": 9,
+    "passed_tests": 2,
+    "failed_tests": 7,
+    "success_rate": 22.22222222222222
+  },
+  "project_id": null,
+  "results": [
+    {
+      "test": "Health Check",
+      "success": true,
+      "details": "Status: 200, Response: {'status': 'healthy', 'service': 'strumind-backend'}",
+      "timestamp": "2025-06-20T09:47:27.292221"
+    },
+    {
+      "test": "User Registration",
+      "success": false,
+      "details": "Status: 422",
+      "timestamp": "2025-06-20T09:47:27.302028"
+    },
+    {
+      "test": "User Login",
+      "success": false,
+      "details": "Status: 422",
+      "timestamp": "2025-06-20T09:47:27.303657"
+    },
+    {
+      "test": "Project Creation",
+      "success": false,
+      "details": "Status: 403",
+      "timestamp": "2025-06-20T09:47:27.305724"
+    },
+    {
+      "test": "Structural Modeling",
+      "success": false,
+      "details": "No project ID available",
+      "timestamp": "2025-06-20T09:47:27.305775"
+    },
+    {
+      "test": "Analysis Engine",
+      "success": false,
+      "details": "No project ID available",
+      "timestamp": "2025-06-20T09:47:27.305801"
+    },
+    {
+      "test": "Design Module Health",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-06-20T09:47:27.306769"
+    },
+    {
+      "test": "File Exports",
+      "success": false,
+      "details": "No project ID available",
+      "timestamp": "2025-06-20T09:47:27.306815"
+    },
+    {
+      "test": "Collaboration Features",
+      "success": false,
+      "details": "No project ID available",
+      "timestamp": "2025-06-20T09:47:27.306839"
+    }
+  ]
+}

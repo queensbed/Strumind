@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useRef, useState, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Grid, TransformControls, Text, Line } from '@react-three/drei'
+import { OrbitControls, Grid, TransformControls, Text, Line, Box, Sphere, Html, PerspectiveCamera } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface Node {
@@ -48,14 +48,23 @@ interface ModelBuilder3DProps {
   showLoads?: boolean
 }
 
-// Node component
-function NodeComponent({ node, onSelect, onMove, selected }: {
+// Enhanced Node component with advanced features
+function NodeComponent({ node, onSelect, onMove, selected, showLabels = true, nodeSize = 0.1 }: {
   node: Node
   onSelect: (id: string) => void
   onMove: (id: string, position: [number, number, number]) => void
   selected: boolean
+  showLabels?: boolean
+  nodeSize?: number
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const [hovered, setHovered] = useState(false)
+  
+  const nodeColor = useMemo(() => {
+    if (selected) return '#ff6b6b'
+    if (hovered) return '#ffd93d'
+    return '#4ecdc4'
+  }, [selected, hovered])
   
   return (
     <group position={[node.x, node.y, node.z]}>
@@ -65,36 +74,67 @@ function NodeComponent({ node, onSelect, onMove, selected }: {
           e.stopPropagation()
           onSelect(node.id)
         }}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
       >
-        <sphereGeometry args={[0.1, 16, 16]} />
+        <sphereGeometry args={[nodeSize, 16, 16]} />
         <meshStandardMaterial 
-          color={selected ? '#ff6b6b' : '#4ecdc4'} 
+          color={nodeColor} 
           transparent
-          opacity={0.8}
+          opacity={selected ? 1.0 : 0.8}
+          emissive={selected ? '#ff3333' : '#000000'}
+          emissiveIntensity={selected ? 0.2 : 0}
         />
       </mesh>
-      <Text
-        position={[0, 0.3, 0]}
-        fontSize={0.1}
-        color="black"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {node.id}
-      </Text>
+      
+      {/* Node constraints visualization */}
+      {node.z === 0 && (
+        <Box args={[0.2, 0.05, 0.2]} position={[0, -0.15, 0]}>
+          <meshStandardMaterial color="#8b4513" />
+        </Box>
+      )}
+      
+      {/* Node label */}
+      {showLabels && (
+        <Text
+          position={[0, nodeSize + 0.2, 0]}
+          fontSize={0.08}
+          color="black"
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.01}
+          outlineColor="white"
+        >
+          {node.id}
+        </Text>
+      )}
+      
+      {/* Hover info */}
+      {hovered && (
+        <Html position={[0, nodeSize + 0.4, 0]} center>
+          <div className="bg-black text-white px-2 py-1 rounded text-xs">
+            {node.id}<br/>
+            X: {node.x.toFixed(1)}m<br/>
+            Y: {node.y.toFixed(1)}m<br/>
+            Z: {node.z.toFixed(1)}m
+          </div>
+        </Html>
+      )}
     </group>
   )
 }
 
-// Element component
-function ElementComponent({ element, nodes, onSelect, selected }: {
+// Enhanced Element component with 3D sections
+function ElementComponent({ element, nodes, onSelect, selected, showSections = true }: {
   element: Element
   nodes: Node[]
   onSelect: (id: string) => void
   selected: boolean
+  showSections?: boolean
 }) {
   const startNode = nodes.find(n => n.id === element.nodeIds[0])
   const endNode = nodes.find(n => n.id === element.nodeIds[1])
+  const [hovered, setHovered] = useState(false)
   
   if (!startNode || !endNode) return null
   
@@ -112,25 +152,97 @@ function ElementComponent({ element, nodes, onSelect, selected }: {
     }
   }
   
+  const getSectionDimensions = (type: string) => {
+    switch (type) {
+      case 'beam': return [0.3, 0.6, 0.1] // width, height, thickness
+      case 'column': return [0.4, 0.4, 0.1]
+      case 'brace': return [0.2, 0.2, 0.05]
+      default: return [0.2, 0.2, 0.05]
+    }
+  }
+  
+  // Calculate element direction and length
+  const direction = new THREE.Vector3().subVectors(points[1], points[0])
+  const length = direction.length()
+  const center = new THREE.Vector3().addVectors(points[0], points[1]).multiplyScalar(0.5)
+  
+  // Create rotation matrix to align with element direction
+  const up = new THREE.Vector3(0, 1, 0)
+  const quaternion = new THREE.Quaternion().setFromUnitVectors(up, direction.normalize())
+  
   return (
-    <Line
-      points={points}
-      color={selected ? '#ff6b6b' : getElementColor(element.type)}
-      lineWidth={selected ? 4 : 2}
-      onClick={(e) => {
-        e.stopPropagation()
-        onSelect(element.id)
-      }}
-    />
+    <group>
+      {/* Element line */}
+      <Line
+        points={points}
+        color={selected ? '#ff6b6b' : hovered ? '#ffd93d' : getElementColor(element.type)}
+        lineWidth={selected ? 6 : hovered ? 4 : 2}
+        onClick={(e) => {
+          e.stopPropagation()
+          onSelect(element.id)
+        }}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      />
+      
+      {/* 3D Section representation */}
+      {showSections && (
+        <group position={center} quaternion={quaternion}>
+          <Box 
+            args={[...getSectionDimensions(element.type), length]}
+            onClick={(e) => {
+              e.stopPropagation()
+              onSelect(element.id)
+            }}
+            onPointerEnter={() => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}
+          >
+            <meshStandardMaterial 
+              color={selected ? '#ff6b6b' : getElementColor(element.type)}
+              transparent
+              opacity={0.3}
+              wireframe={!selected}
+            />
+          </Box>
+        </group>
+      )}
+      
+      {/* Element label */}
+      <Text
+        position={[center.x, center.y + 0.3, center.z]}
+        fontSize={0.06}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.005}
+        outlineColor="white"
+      >
+        {element.id}
+      </Text>
+      
+      {/* Hover info */}
+      {hovered && (
+        <Html position={[center.x, center.y + 0.5, center.z]} center>
+          <div className="bg-black text-white px-2 py-1 rounded text-xs">
+            {element.id}<br/>
+            Type: {element.type}<br/>
+            Length: {length.toFixed(2)}m<br/>
+            Nodes: {element.nodeIds.join(' - ')}
+          </div>
+        </Html>
+      )}
+    </group>
   )
 }
 
-// Load component
-function LoadComponent({ load, nodes, elements }: {
+// Enhanced Load component with advanced visualization
+function LoadComponent({ load, nodes, elements, scale = 0.001 }: {
   load: Load
   nodes: Node[]
   elements: Element[]
+  scale?: number
 }) {
+  const [hovered, setHovered] = useState(false)
   let position: [number, number, number] = [0, 0, 0]
   
   if (load.nodeId) {
@@ -152,7 +264,18 @@ function LoadComponent({ load, nodes, elements }: {
   }
   
   const magnitude = Math.sqrt(load.fx ** 2 + load.fy ** 2 + load.fz ** 2)
-  const scale = Math.max(0.5, magnitude / 1000) // Scale based on magnitude
+  const vectorScale = Math.max(0.5, magnitude * scale)
+  
+  const getLoadColor = (type: string) => {
+    switch (type) {
+      case 'point': return '#e74c3c'
+      case 'distributed': return '#9b59b6'
+      case 'moment': return '#f39c12'
+      default: return '#e74c3c'
+    }
+  }
+  
+  const loadColor = getLoadColor(load.type)
   
   return (
     <group position={position}>
@@ -160,26 +283,88 @@ function LoadComponent({ load, nodes, elements }: {
       <Line
         points={[
           new THREE.Vector3(0, 0, 0),
-          new THREE.Vector3(load.fx * scale, load.fy * scale, load.fz * scale)
+          new THREE.Vector3(load.fx * vectorScale, load.fy * vectorScale, load.fz * vectorScale)
         ]}
-        color="#e74c3c"
-        lineWidth={3}
+        color={hovered ? '#ffd93d' : loadColor}
+        lineWidth={hovered ? 5 : 3}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
       />
+      
       {/* Arrow head */}
-      <mesh position={[load.fx * scale, load.fy * scale, load.fz * scale]}>
+      <mesh 
+        position={[load.fx * vectorScale, load.fy * vectorScale, load.fz * vectorScale]}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      >
         <coneGeometry args={[0.05, 0.2, 8]} />
-        <meshStandardMaterial color="#e74c3c" />
+        <meshStandardMaterial color={hovered ? '#ffd93d' : loadColor} />
       </mesh>
+      
+      {/* Distributed load visualization */}
+      {load.type === 'distributed' && load.elementId && (
+        <group>
+          {Array.from({ length: 5 }, (_, i) => {
+            const t = i / 4
+            const element = elements.find(e => e.id === load.elementId)
+            if (!element) return null
+            
+            const startNode = nodes.find(n => n.id === element.nodeIds[0])
+            const endNode = nodes.find(n => n.id === element.nodeIds[1])
+            if (!startNode || !endNode) return null
+            
+            const pos = [
+              startNode.x + t * (endNode.x - startNode.x),
+              startNode.y + t * (endNode.y - startNode.y),
+              startNode.z + t * (endNode.z - startNode.z)
+            ]
+            
+            return (
+              <group key={i} position={pos}>
+                <Line
+                  points={[
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(0, -vectorScale * 0.5, 0)
+                  ]}
+                  color={loadColor}
+                  lineWidth={2}
+                />
+                <mesh position={[0, -vectorScale * 0.5, 0]}>
+                  <coneGeometry args={[0.02, 0.1, 6]} />
+                  <meshStandardMaterial color={loadColor} />
+                </mesh>
+              </group>
+            )
+          })}
+        </group>
+      )}
+      
       {/* Load label */}
       <Text
-        position={[load.fx * scale + 0.2, load.fy * scale + 0.2, load.fz * scale]}
-        fontSize={0.08}
-        color="#e74c3c"
+        position={[load.fx * vectorScale + 0.2, load.fy * vectorScale + 0.2, load.fz * vectorScale]}
+        fontSize={0.06}
+        color={loadColor}
         anchorX="center"
         anchorY="middle"
+        outlineWidth={0.005}
+        outlineColor="white"
       >
-        {`${magnitude.toFixed(1)}N`}
+        {`${magnitude.toFixed(1)}kN`}
       </Text>
+      
+      {/* Hover info */}
+      {hovered && (
+        <Html position={[load.fx * vectorScale + 0.3, load.fy * vectorScale + 0.3, load.fz * vectorScale]} center>
+          <div className="bg-black text-white px-2 py-1 rounded text-xs">
+            {load.id}<br/>
+            Type: {load.type}<br/>
+            Fx: {load.fx.toFixed(1)} kN<br/>
+            Fy: {load.fy.toFixed(1)} kN<br/>
+            Fz: {load.fz.toFixed(1)} kN<br/>
+            Magnitude: {magnitude.toFixed(1)} kN
+          </div>
+        </Html>
+      )}
     </group>
   )
 }

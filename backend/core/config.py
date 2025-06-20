@@ -41,7 +41,7 @@ class Settings(BaseSettings):
         default=[
             "http://localhost:3000", 
             "https://app.strumind.com",
-            "https://work-2-tgaufxkwcjeifuoc.prod-runtime.all-hands.dev"
+            "https://work-2-efusmetjutlqmgax.prod-runtime.all-hands.dev"
         ],
         env="ALLOWED_ORIGINS"
     )
@@ -50,7 +50,7 @@ class Settings(BaseSettings):
             "localhost", 
             "127.0.0.1", 
             "api.strumind.com",
-            "work-1-tgaufxkwcjeifuoc.prod-runtime.all-hands.dev"
+            "work-1-efusmetjutlqmgax.prod-runtime.all-hands.dev"
         ],
         env="ALLOWED_HOSTS"
     )

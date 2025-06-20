@@ -1,66 +1,120 @@
 {
-  "timestamp": "2025-06-20 09:52:14",
+  "timestamp": "2025-06-20 09:53:35",
   "summary": {
-    "total_tests": 9,
-    "passed_tests": 3,
-    "failed_tests": 6,
-    "success_rate": 33.33333333333333
+    "total_tests": 18,
+    "passed_tests": 11,
+    "failed_tests": 7,
+    "success_rate": 61.111111111111114
   },
-  "project_id": null,
+  "project_id": "e2f29795-6a89-437a-973c-36979a78a05d",
   "results": [
     {
       "test": "Health Check",
       "success": true,
       "details": "Status: 200, Response: {'status': 'healthy', 'service': 'strumind-backend'}",
-      "timestamp": "2025-06-20T09:52:14.430979"
+      "timestamp": "2025-06-20T09:53:34.780408"
     },
     {
       "test": "User Registration",
       "success": true,
       "details": "Status: 400",
-      "timestamp": "2025-06-20T09:52:14.525719"
+      "timestamp": "2025-06-20T09:53:34.873809"
     },
     {
       "test": "User Login",
-      "success": false,
-      "details": "Status: 422",
-      "timestamp": "2025-06-20T09:52:14.527721"
+      "success": true,
+      "details": "Token obtained successfully",
+      "timestamp": "2025-06-20T09:53:35.151573"
     },
     {
       "test": "Project Creation",
-      "success": false,
-      "details": "Status: 403",
-      "timestamp": "2025-06-20T09:52:14.530000"
+      "success": true,
+      "details": "Project ID: e2f29795-6a89-437a-973c-36979a78a05d",
+      "timestamp": "2025-06-20T09:53:35.175549"
     },
     {
-      "test": "Structural Modeling",
-      "success": false,
-      "details": "No project ID available",
-      "timestamp": "2025-06-20T09:52:14.530050"
+      "test": "Project Listing",
+      "success": true,
+      "details": "Found 4 projects",
+      "timestamp": "2025-06-20T09:53:35.185036"
     },
     {
-      "test": "Analysis Engine",
+      "test": "Project Details",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-06-20T09:53:35.189133"
+    },
+    {
+      "test": "Material Creation",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-06-20T09:53:35.212635"
+    },
+    {
+      "test": "Section Creation",
       "success": false,
-      "details": "No project ID available",
-      "timestamp": "2025-06-20T09:52:14.530084"
+      "details": "Status: 500",
+      "timestamp": "2025-06-20T09:53:35.249183"
+    },
+    {
+      "test": "Node Creation",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2025-06-20T09:53:35.269952"
+    },
+    {
+      "test": "Element Creation",
+      "success": false,
+      "details": "Status: 422",
+      "timestamp": "2025-06-20T09:53:35.272921"
+    },
+    {
+      "test": "Load Creation",
+      "success": false,
+      "details": "Status: 422",
+      "timestamp": "2025-06-20T09:53:35.275519"
+    },
+    {
+      "test": "Analysis Execution",
+      "success": false,
+      "details": "Status: 422",
+      "timestamp": "2025-06-20T09:53:35.278185"
     },
     {
       "test": "Design Module Health",
       "success": true,
       "details": "Status: 200",
-      "timestamp": "2025-06-20T09:52:14.531074"
+      "timestamp": "2025-06-20T09:53:35.279194"
     },
     {
-      "test": "File Exports",
+      "test": "PDF Export",
       "success": false,
-      "details": "No project ID available",
-      "timestamp": "2025-06-20T09:52:14.531119"
+      "details": "Status: 404",
+      "timestamp": "2025-06-20T09:53:35.280242"
     },
     {
-      "test": "Collaboration Features",
+      "test": "DXF Export",
       "success": false,
-      "details": "No project ID available",
-      "timestamp": "2025-06-20T09:52:14.531151"
+      "details": "Status: 404",
+      "timestamp": "2025-06-20T09:53:35.281319"
+    },
+    {
+      "test": "IFC Export",
+      "success": false,
+      "details": "Status: 404",
+      "timestamp": "2025-06-20T09:53:35.282406"
+    },
+    {
+      "test": "Project Members API",
+      "success": true,
+      "details": "Status: 404",
+      "timestamp": "2025-06-20T09:53:35.283637"
+    },
+    {
+      "test": "Activity Log API",
+      "success": true,
+      "details": "Status: 404",
+      "timestamp": "2025-06-20T09:53:35.284683"
     }
   ]
 }

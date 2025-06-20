@@ -1,6 +1,6 @@
 export const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://api.strumind.com' 
-  : 'https://work-1-tgaufxkwcjeifuoc.prod-runtime.all-hands.dev'
+  : 'https://work-1-efusmetjutlqmgax.prod-runtime.all-hands.dev'
 
 export const API_ENDPOINTS = {
   auth: {

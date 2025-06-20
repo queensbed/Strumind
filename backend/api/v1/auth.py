@@ -38,7 +38,7 @@ class Token(BaseModel):
     token_type: str
 
 class LoginRequest(BaseModel):
-    username: str
+    email: str
     password: str
 
 # In-memory user storage (replace with database in production)
@@ -118,7 +118,7 @@ def register(user: UserCreate):
 
 @router.post('/login', response_model=Token)
 async def login(login_request: LoginRequest):
-    user = authenticate_user(login_request.username, login_request.password)
+    user = authenticate_user(login_request.email, login_request.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

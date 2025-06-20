@@ -63,7 +63,7 @@ class StruMindAPITester:
         
         # Test login
         login_data = {
-            "username": "api.test@strumind.com",
+            "email": "api.test@strumind.com",
             "password": "TestPass123!"
         }
         

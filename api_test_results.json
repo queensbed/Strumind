@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-06-20 09:47:27",
+  "timestamp": "2025-06-20 09:52:14",
   "summary": {
     "total_tests": 9,
-    "passed_tests": 2,
-    "failed_tests": 7,
-    "success_rate": 22.22222222222222
+    "passed_tests": 3,
+    "failed_tests": 6,
+    "success_rate": 33.33333333333333
   },
   "project_id": null,
   "results": [
@@ -12,55 +12,55 @@
       "test": "Health Check",
       "success": true,
       "details": "Status: 200, Response: {'status': 'healthy', 'service': 'strumind-backend'}",
-      "timestamp": "2025-06-20T09:47:27.292221"
+      "timestamp": "2025-06-20T09:52:14.430979"
     },
     {
       "test": "User Registration",
-      "success": false,
-      "details": "Status: 422",
-      "timestamp": "2025-06-20T09:47:27.302028"
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2025-06-20T09:52:14.525719"
     },
     {
       "test": "User Login",
       "success": false,
       "details": "Status: 422",
-      "timestamp": "2025-06-20T09:47:27.303657"
+      "timestamp": "2025-06-20T09:52:14.527721"
     },
     {
       "test": "Project Creation",
       "success": false,
       "details": "Status: 403",
-      "timestamp": "2025-06-20T09:47:27.305724"
+      "timestamp": "2025-06-20T09:52:14.530000"
     },
     {
       "test": "Structural Modeling",
       "success": false,
       "details": "No project ID available",
-      "timestamp": "2025-06-20T09:47:27.305775"
+      "timestamp": "2025-06-20T09:52:14.530050"
     },
     {
       "test": "Analysis Engine",
       "success": false,
       "details": "No project ID available",
-      "timestamp": "2025-06-20T09:47:27.305801"
+      "timestamp": "2025-06-20T09:52:14.530084"
     },
     {
       "test": "Design Module Health",
       "success": true,
       "details": "Status: 200",
-      "timestamp": "2025-06-20T09:47:27.306769"
+      "timestamp": "2025-06-20T09:52:14.531074"
     },
     {
       "test": "File Exports",
       "success": false,
       "details": "No project ID available",
-      "timestamp": "2025-06-20T09:47:27.306815"
+      "timestamp": "2025-06-20T09:52:14.531119"
     },
     {
       "test": "Collaboration Features",
       "success": false,
       "details": "No project ID available",
-      "timestamp": "2025-06-20T09:47:27.306839"
+      "timestamp": "2025-06-20T09:52:14.531151"
     }
   ]
 }

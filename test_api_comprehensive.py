@@ -68,7 +68,7 @@ class StruMindAPITester:
         }
         
         try:
-            response = self.session.post(f"{BACKEND_URL}/api/v1/auth/login", data=login_data)
+            response = self.session.post(f"{BACKEND_URL}/api/v1/auth/login", json=login_data)
             if response.status_code == 200:
                 token_data = response.json()
                 self.access_token = token_data.get("access_token")

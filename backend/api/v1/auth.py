@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
@@ -36,6 +36,10 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
 
 # In-memory user storage (replace with database in production)
 fake_users_db = {}
@@ -113,8 +117,8 @@ def register(user: UserCreate):
     return UserResponse(**user_data)
 
 @router.post('/login', response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
+async def login(login_request: LoginRequest):
+    user = authenticate_user(login_request.username, login_request.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -126,6 +130,26 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         data={"sub": user["email"]}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post('/login-form', response_model=Token)
+async def login_form(username: str = Form(), password: str = Form()):
+    user = authenticate_user(username, password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["email"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+# Debug endpoint to test form data
+@router.post('/test-login')
+async def test_login(username: str, password: str):
+    return {"username": username, "password": "***", "message": "Form data received"}
 
 @router.get('/me', response_model=UserResponse)
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):

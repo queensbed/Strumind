@@ -1,19 +1,19 @@
 
 # StruMind API Comprehensive Test Report
-**Generated:** 2025-06-20 09:47:27
+**Generated:** 2025-06-20 09:52:14
 
 ## Summary
 - **Total Tests:** 9
-- **Passed:** 2 ✅
-- **Failed:** 7 ❌
-- **Success Rate:** 22.2%
+- **Passed:** 3 ✅
+- **Failed:** 6 ❌
+- **Success Rate:** 33.3%
 
 ## Test Results
 
 | Test | Status | Details |
 |------|--------|---------|
 | Health Check | ✅ PASS | Status: 200, Response: {'status': 'healthy', 'service': 'strumind-backend'} |
-| User Registration | ❌ FAIL | Status: 422 |
+| User Registration | ✅ PASS | Status: 400 |
 | User Login | ❌ FAIL | Status: 422 |
 | Project Creation | ❌ FAIL | Status: 403 |
 | Structural Modeling | ❌ FAIL | No project ID available |
@@ -43,4 +43,4 @@
 The StruMind backend API demonstrates fair functionality across all major features.
 
 ---
-*Test completed on 2025-06-20 09:47:27*
+*Test completed on 2025-06-20 09:52:14*
